@@ -82,7 +82,7 @@ class SigninActivity : AppCompatActivity() {
                 ).show()
 
                 val intent = Intent(this, HomeActivity::class.java)
-                intent.putExtra("user_name", "Kristin Watson")
+                intent.putExtra("user_name", "Mahendra Rajpurohit")
                 startActivity(intent)
 
             } else {
