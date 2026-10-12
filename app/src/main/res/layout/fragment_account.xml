@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/p4_account_title"
+            android:textColor="@color/dark_text"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/p4_account_caption"
+            android:textColor="@color/secondary_text"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/imgProfilePicture"
+            android:layout_width="124dp"
+            android:layout_height="124dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_card"
+            android:contentDescription="@string/p4_profile_picture_description"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_camera" />
+
+        <Button
+            android:id="@+id/btnTakePicture"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_button"
+            android:backgroundTint="@null"
+            android:text="@string/p4_take_picture"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+        <EditText
+            android:id="@+id/etProfileName"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_input"
+            android:hint="@string/p4_name_hint"
+            android:inputType="textPersonName"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/dark_text"
+            android:textColorHint="@color/secondary_text" />
+
+        <EditText
+            android:id="@+id/etProfileAddress"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input"
+            android:gravity="top"
+            android:hint="@string/p4_address_hint"
+            android:inputType="textPostalAddress|textMultiLine"
+            android:padding="14dp"
+            android:textColor="@color/dark_text"
+            android:textColorHint="@color/secondary_text" />
+
+        <EditText
+            android:id="@+id/etProfileEmail"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input"
+            android:hint="@string/p4_email_hint"
+            android:inputType="textEmailAddress"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/dark_text"
+            android:textColorHint="@color/secondary_text" />
+
+        <EditText
+            android:id="@+id/etProfileContact"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input"
+            android:hint="@string/p4_contact_hint"
+            android:inputType="phone"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/dark_text"
+            android:textColorHint="@color/secondary_text" />
+
+        <EditText
+            android:id="@+id/etProfileDob"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_input"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="@string/p4_dob_hint"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/dark_text"
+            android:textColorHint="@color/secondary_text" />
+
+        <Button
+            android:id="@+id/btnSaveProfile"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_button"
+            android:backgroundTint="@null"
+            android:text="@string/p4_save_profile"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</ScrollView>
