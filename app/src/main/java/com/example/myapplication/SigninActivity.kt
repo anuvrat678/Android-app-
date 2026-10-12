@@ -33,7 +33,7 @@ class SigninActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.tvForgotPassword)
 
         // Static login credentials
-        val correctEmail = "kristin.watson@example.com"
+        val correctEmail = "mahendra@gmail.com"
         val correctPassword = "12345678"
 
         // Back button
