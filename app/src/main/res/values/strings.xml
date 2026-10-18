@@ -10,5 +10,9 @@
     <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="login_with_fingerprint">Login with Fingerprint</string>
+    <string name="biometric_title">Authenticate</string>
+    <string name="biometric_subtitle">Use your fingerprint to continue</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

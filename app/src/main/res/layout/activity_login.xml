@@ -172,6 +172,25 @@
                     android:textColor="@color/white"
                     android:textSize="13sp" />
 
+                <!-- Fingerprint Authentication button -->
+                <Button
+                    android:id="@+id/btnFingerprint"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_button"
+                    android:backgroundTint="@color/primary_blue"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/login_with_fingerprint"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    app:drawableStartCompat="@drawable/ic_fingerprint"
+                    app:drawableTint="@color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+
                 <!-- Account link -->
                 <TextView
                     android:id="@+id/tvGoToSignUp"
