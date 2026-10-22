@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -13,47 +14,31 @@ import androidx.core.content.ContextCompat
 
 class SigninActivity : AppCompatActivity() {
 
+    private lateinit var db: AppDatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val etEmail =
-            findViewById<EditText>(R.id.etLoginEmail)
+        db = AppDatabaseHelper(this)
 
-        val etPassword =
-            findViewById<EditText>(R.id.etLoginPassword)
+        val etEmail = findViewById<EditText>(R.id.etLoginEmail)
+        val etPassword = findViewById<EditText>(R.id.etLoginPassword)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val btnFingerprint = findViewById<Button>(R.id.btnFingerprint)
+        val tvBack = findViewById<TextView>(R.id.tvBack)
+        val tvGoToSignUp = findViewById<TextView>(R.id.tvGoToSignUp)
+        val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
 
-        val btnLogin =
-            findViewById<Button>(R.id.btnLogin)
-
-        val btnFingerprint =
-            findViewById<Button>(R.id.btnFingerprint)
-
-        val tvBack =
-            findViewById<TextView>(R.id.tvBack)
-
-        val tvGoToSignUp =
-            findViewById<TextView>(R.id.tvGoToSignUp)
-
-        val tvForgotPassword =
-            findViewById<TextView>(R.id.tvForgotPassword)
-
-        // Static login credentials
-        val correctEmail = "mahendra@gmail.com"
-        val correctPassword = "12345678"
-
-        // Back button
         tvBack.setOnClickListener {
             finish()
         }
 
-        // Open Sign Up screen
         tvGoToSignUp.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
-        // Forgot password message
         tvForgotPassword.setOnClickListener {
             Toast.makeText(
                 this,
@@ -62,46 +47,34 @@ class SigninActivity : AppCompatActivity() {
             ).show()
         }
 
-        // Verify login credentials
         btnLogin.setOnClickListener {
-
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Enter email and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                Toast.makeText(
-                    this,
-                    "Enter email and password",
-                    Toast.LENGTH_SHORT
-                ).show()
+            val user = db.checkUserCredentials(email, password)
+            if (user != null) {
+                // Save active email in session
+                getSharedPreferences("yummcart_session", Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("active_user_email", user.email)
+                    .apply()
 
-            } else if (
-                email.equals(correctEmail, ignoreCase = true) &&
-                password == correctPassword
-            ) {
-
-                Toast.makeText(
-                    this,
-                    "Login successful",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Login successful (SQLite DB)", Toast.LENGTH_SHORT).show()
 
                 val intent = Intent(this, HomeActivity::class.java)
-                intent.putExtra("user_name", "Mahendra Rajpurohit")
+                intent.putExtra("user_name", user.name)
                 startActivity(intent)
-
+                finish()
             } else {
-
-                Toast.makeText(
-                    this,
-                    "Invalid email or password",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Fingerprint Authentication button click listener
         btnFingerprint.setOnClickListener {
             showBiometricPrompt()
         }
@@ -125,8 +98,16 @@ class SigninActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
+                            val defaultUser = db.getUserByEmail("mahendra@gmail.com")
+                            val name = defaultUser?.name ?: "Mahendra Rajpurohit"
+
+                            getSharedPreferences("yummcart_session", Context.MODE_PRIVATE)
+                                .edit()
+                                .putString("active_user_email", defaultUser?.email ?: "mahendra@gmail.com")
+                                .apply()
+
                             val intent = Intent(this@SigninActivity, HomeActivity::class.java)
-                            intent.putExtra("user_name", "Mahendra Rajpurohit")
+                            intent.putExtra("user_name", name)
                             startActivity(intent)
                             finish()
                         }

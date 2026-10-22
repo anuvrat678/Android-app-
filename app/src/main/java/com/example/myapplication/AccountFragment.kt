@@ -19,6 +19,8 @@ import java.util.Calendar
 class AccountFragment : Fragment() {
 
     private var profileImageView: ImageView? = null
+    private lateinit var db: AppDatabaseHelper
+    private var currentUser: User? = null
 
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicturePreview()
@@ -37,7 +39,7 @@ class AccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_account, container, false)
-        val prefs = requireContext().getSharedPreferences("yummcart_profile", Context.MODE_PRIVATE)
+        db = AppDatabaseHelper(requireContext())
 
         val image = view.findViewById<ImageView>(R.id.imgProfilePicture)
         profileImageView = image
@@ -49,11 +51,17 @@ class AccountFragment : Fragment() {
         val contact = view.findViewById<EditText>(R.id.etProfileContact)
         val dob = view.findViewById<EditText>(R.id.etProfileDob)
 
-        name.setText(prefs.getString("name", ""))
-        address.setText(prefs.getString("address", ""))
-        email.setText(prefs.getString("email", ""))
-        contact.setText(prefs.getString("contact", ""))
-        dob.setText(prefs.getString("dob", ""))
+        val sessionPrefs = requireContext().getSharedPreferences("yummcart_session", Context.MODE_PRIVATE)
+        val activeEmail = sessionPrefs.getString("active_user_email", "mahendra@gmail.com") ?: "mahendra@gmail.com"
+
+        currentUser = db.getUserByEmail(activeEmail)
+        currentUser?.let { user ->
+            name.setText(user.name)
+            address.setText(user.address)
+            email.setText(user.email)
+            contact.setText(user.contact)
+            dob.setText(user.dob)
+        }
 
         view.findViewById<Button>(R.id.btnTakePicture).setOnClickListener {
             cameraLauncher.launch(null)
@@ -100,14 +108,24 @@ class AccountFragment : Fragment() {
                     contact.error = getString(R.string.p4_invalid_contact)
                 }
                 else -> {
-                    prefs.edit()
-                        .putString("name", nameValue)
-                        .putString("address", addressValue)
-                        .putString("email", emailValue)
-                        .putString("contact", contactValue)
-                        .putString("dob", dobValue)
-                        .apply()
-                    Toast.makeText(requireContext(), R.string.p4_profile_saved, Toast.LENGTH_SHORT).show()
+                    val updatedUser = User(
+                        id = currentUser?.id ?: 0,
+                        name = nameValue,
+                        email = emailValue,
+                        password = currentUser?.password ?: "12345678",
+                        address = addressValue,
+                        contact = contactValue,
+                        dob = dobValue
+                    )
+
+                    val success = db.updateUser(updatedUser)
+                    if (success) {
+                        sessionPrefs.edit().putString("active_user_email", emailValue).apply()
+                        currentUser = updatedUser
+                        Toast.makeText(requireContext(), "Account details updated in SQLite Database!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to update profile in database", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

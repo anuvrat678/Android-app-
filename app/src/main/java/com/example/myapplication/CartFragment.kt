@@ -14,12 +14,16 @@ import androidx.fragment.app.Fragment
 
 class CartFragment : Fragment() {
 
+    private lateinit var db: AppDatabaseHelper
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_cart, container, false)
+        db = AppDatabaseHelper(requireContext())
+
         val cartItemsContainer = view.findViewById<LinearLayout>(R.id.cartItemsContainer)
         val emptyMessage = view.findViewById<TextView>(R.id.tvEmptyCart)
         val totalView = view.findViewById<TextView>(R.id.tvCartTotal)
@@ -27,7 +31,7 @@ class CartFragment : Fragment() {
         val viewOrders = view.findViewById<Button>(R.id.btnViewOrders)
 
         fun refreshCart() {
-            val lines = FoodStore.cartLines()
+            val lines = db.getAllCartLines()
             cartItemsContainer.removeAllViews()
             emptyMessage.visibility = if (lines.isEmpty()) View.VISIBLE else View.GONE
 
@@ -42,26 +46,26 @@ class CartFragment : Fragment() {
                 )
                 row.findViewById<TextView>(R.id.tvCartQuantity).text = line.quantity.toString()
                 row.findViewById<Button>(R.id.btnCartDecrease).setOnClickListener {
-                    FoodStore.decrease(line.product.id)
+                    db.decreaseCartQuantity(line.product.id)
                     refreshCart()
                 }
                 row.findViewById<Button>(R.id.btnCartIncrease).setOnClickListener {
-                    FoodStore.increase(line.product.id)
+                    db.increaseCartQuantity(line.product.id)
                     refreshCart()
                 }
                 row.findViewById<Button>(R.id.btnCartRemove).setOnClickListener {
-                    FoodStore.remove(line.product.id)
+                    db.removeFromCart(line.product.id)
                     refreshCart()
                 }
                 cartItemsContainer.addView(row)
             }
-            totalView.text = getString(R.string.p4_cart_total, FoodStore.total())
+            totalView.text = getString(R.string.p4_cart_total, db.getCartTotal())
         }
 
         refreshCart()
 
         checkout.setOnClickListener {
-            val lines = FoodStore.cartLines()
+            val lines = db.getAllCartLines()
             if (lines.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.p4_cart_empty_toast, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -69,7 +73,7 @@ class CartFragment : Fragment() {
 
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.p4_order_summary)
-                .setMessage(getString(R.string.p4_order_confirmation, FoodStore.itemCount(), FoodStore.total()))
+                .setMessage(getString(R.string.p4_order_confirmation, db.getCartItemCount(), db.getCartTotal()))
                 .setPositiveButton(R.string.p4_place_order) { _, _ ->
                     val resolver = context?.contentResolver
                     lines.forEach { line ->
@@ -81,7 +85,7 @@ class CartFragment : Fragment() {
                         }
                         resolver?.insert(OrderContract.OrderEntry.CONTENT_URI, values)
                     }
-                    FoodStore.clearCart()
+                    db.clearCart()
                     refreshCart()
                     Toast.makeText(requireContext(), R.string.p4_order_placed, Toast.LENGTH_LONG).show()
                 }

@@ -11,12 +11,16 @@ import androidx.fragment.app.Fragment
 
 class CategoriesFragment : Fragment() {
 
+    private lateinit var db: AppDatabaseHelper
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_categories, container, false)
+        db = AppDatabaseHelper(requireContext())
+
         val categoryContainer = view.findViewById<LinearLayout>(R.id.categoriesContainer)
         categoryContainer.removeAllViews()
 
@@ -27,9 +31,14 @@ class CategoriesFragment : Fragment() {
             "Beverages" to (R.drawable.ic_food_drink to R.string.p4_category_beverages_caption)
         )
 
-        FoodStore.categories.forEach { category ->
+        val categories = db.getAllCategories()
+
+        categories.forEach { category ->
             val row = inflater.inflate(R.layout.item_category_card, categoryContainer, false)
-            val (iconRes, captionRes) = categoryPresentation.getValue(category)
+            val presentation = categoryPresentation[category]
+                ?: (R.drawable.ic_yummcart_food to R.string.p4_brand_tagline)
+
+            val (iconRes, captionRes) = presentation
             row.findViewById<ImageView>(R.id.ivCategoryIcon).setImageResource(iconRes)
             row.findViewById<TextView>(R.id.tvCategoryName).text = category
             row.findViewById<TextView>(R.id.tvCategoryCaption).text = getString(captionRes)
