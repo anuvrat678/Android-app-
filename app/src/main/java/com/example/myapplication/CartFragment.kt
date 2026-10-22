@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ class CartFragment : Fragment() {
         val emptyMessage = view.findViewById<TextView>(R.id.tvEmptyCart)
         val totalView = view.findViewById<TextView>(R.id.tvCartTotal)
         val checkout = view.findViewById<Button>(R.id.btnCheckout)
+        val viewOrders = view.findViewById<Button>(R.id.btnViewOrders)
 
         fun refreshCart() {
             val lines = FoodStore.cartLines()
@@ -69,12 +71,26 @@ class CartFragment : Fragment() {
                 .setTitle(R.string.p4_order_summary)
                 .setMessage(getString(R.string.p4_order_confirmation, FoodStore.itemCount(), FoodStore.total()))
                 .setPositiveButton(R.string.p4_place_order) { _, _ ->
+                    val resolver = context?.contentResolver
+                    lines.forEach { line ->
+                        val values = ContentValues().apply {
+                            put(OrderContract.OrderEntry.COLUMN_ITEM_NAME, line.product.name)
+                            put(OrderContract.OrderEntry.COLUMN_QUANTITY, line.quantity)
+                            put(OrderContract.OrderEntry.COLUMN_PRICE, line.product.price.toDouble())
+                            put(OrderContract.OrderEntry.COLUMN_STATUS, "Placed")
+                        }
+                        resolver?.insert(OrderContract.OrderEntry.CONTENT_URI, values)
+                    }
                     FoodStore.clearCart()
                     refreshCart()
                     Toast.makeText(requireContext(), R.string.p4_order_placed, Toast.LENGTH_LONG).show()
                 }
                 .setNegativeButton(R.string.p4_cancel, null)
                 .show()
+        }
+
+        viewOrders.setOnClickListener {
+            (activity as? HomeActivity)?.showOrdersFragment()
         }
 
         return view

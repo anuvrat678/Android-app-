@@ -41,6 +41,19 @@
             android:name=".SignupActivity"
             android:exported="false" />
 
+        <provider
+            android:name=".OrderContentProvider"
+            android:authorities="com.example.myapplication.provider"
+            android:exported="false" />
+
+        <receiver
+            android:name=".AirplaneModeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.AIRPLANE_MODE" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

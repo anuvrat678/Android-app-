@@ -55,11 +55,21 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/bg_button"
         android:backgroundTint="@null"
         android:text="@string/p4_checkout"
         android:textAllCaps="false"
         android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnViewOrders"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="6dp"
+        android:text="View Orders (Content Provider)"
+        android:textAllCaps="false"
+        android:textColor="@color/primary_blue" />
 
 </LinearLayout>
